@@ -933,7 +933,228 @@ paths:
         403:
           $ref: '#/components/responses/ErrorResponse'
         500:
-          $ref: '#/components/responses/ErrorResponse''
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+          
+  /stores:
+     post:
+      tags:
+        - Store Service
+      summary: Add a new store
+      description: Add a new store
+      requestBody:
+        $ref: '#/components/requestBodies/SaveStoreRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetStoreResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Store Service
+      summary: Retrieve set of stores
+      description: Retrieve set of stores
+      responses:
+        200:
+          $ref: '#/components/responses/GetStoresResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /stores/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Store Service
+      summary: Update existing store by item id
+      description: Update existing store by item id
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateStoreRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Store Service
+      summary: Remove existing store by item id
+      description: Remove existing store by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+          
+  /store-inventories:
+     post:
+      tags:
+        - Store Service
+      summary: Add a new store-inventory
+      description: Add a new store-inventory
+      requestBody:
+        $ref: '#/components/requestBodies/SaveStoreInventoryRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetStoreInventoryResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Store Service
+      summary: Retrieve set of store-inventories
+      description: Retrieve set of store-inventories
+      responses:
+        200:
+          $ref: '#/components/responses/GetStoreInventoriesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /store-inventories/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Store Service
+      summary: Update existing store-inventory by item id
+      description: Update existing store-inventory by item id
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateStoreInventoryRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Store Service
+      summary: Remove existing store-inventory by item id
+      description: Remove existing store-inventory by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+          
+  /stock-transactions:
+     post:
+      tags:
+        - Store Service
+      summary: Add a new stock-transaction
+      description: Add a new stock-transaction
+      requestBody:
+        $ref: '#/components/requestBodies/SaveStockTransactionRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetStockTransactionResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Store Service
+      summary: Retrieve set of stock-transactions
+      description: Retrieve set of stock-transactions
+      responses:
+        200:
+          $ref: '#/components/responses/GetStockTransactionsResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /stock-transactions/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    delete:
+      tags:
+       - Store Service
+      summary: Remove existing stock-transaction by item id
+      description: Remove existing stock-transaction by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+        
+        
         
 
 
