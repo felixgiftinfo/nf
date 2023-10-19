@@ -1,718 +1,1964 @@
----
-swagger: "2.0"
+openapi: 3.0.3
 info:
-  description: "This is a sample server Petstore server.  You can find out more about\
-    \ Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\
-    \  For this sample, you can use the api key `special-key` to test the authorization\
-    \ filters."
-  version: "1.0.5"
-  title: "Swagger Petstore"
-  termsOfService: "http://swagger.io/terms/"
+  title: Inventory API
+  version: '1'
+  description: |-
+    The Inventory API exposes a set of objects to represent inventory adjustments and physical counts for quantities of products (as item variations) and transitions of stocked products to the relevant inventory state
+
   contact:
-    email: "apiteam@swagger.io"
+    email: gift.felix@zinc.systems
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
-basePath: "/v2"
-tags:
-- name: "pet"
-  description: "Everything about your Pets"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
-- name: "store"
-  description: "Access to Petstore orders"
-- name: "user"
-  description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
-schemes:
-- "https"
-- "http"
-paths:
-  /pet/{petId}/uploadImage:
-    post:
-      tags:
-      - "pet"
-      summary: "uploads an image"
-      description: ""
-      operationId: "uploadFile"
-      consumes:
-      - "multipart/form-data"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to update"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "additionalMetadata"
-        in: "formData"
-        description: "Additional data to pass to server"
-        required: false
-        type: "string"
-      - name: "file"
-        in: "formData"
-        description: "file to upload"
-        required: false
-        type: "file"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet:
-    post:
-      tags:
-      - "pet"
-      summary: "Add a new pet to the store"
-      description: ""
-      operationId: "addPet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    put:
-      tags:
-      - "pet"
-      summary: "Update an existing pet"
-      description: ""
-      operationId: "updatePet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-        405:
-          description: "Validation exception"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByStatus:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by status"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findPetsByStatus"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "status"
-        in: "query"
-        description: "Status values that need to be considered for filter"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "available"
-          - "pending"
-          - "sold"
-          default: "available"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid status value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByTags:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by tags"
-      description: "Multiple tags can be provided with comma separated strings. Use\
-        \ tag1, tag2, tag3 for testing."
-      operationId: "findPetsByTags"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "tags"
-        in: "query"
-        description: "Tags to filter by"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid tag value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-      deprecated: true
-  /pet/{petId}:
-    get:
-      tags:
-      - "pet"
-      summary: "Find pet by ID"
-      description: "Returns a single pet"
-      operationId: "getPetById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - api_key: []
-    post:
-      tags:
-      - "pet"
-      summary: "Updates a pet in the store with form data"
-      description: ""
-      operationId: "updatePetWithForm"
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet that needs to be updated"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "name"
-        in: "formData"
-        description: "Updated name of the pet"
-        required: false
-        type: "string"
-      - name: "status"
-        in: "formData"
-        description: "Updated status of the pet"
-        required: false
-        type: "string"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    delete:
-      tags:
-      - "pet"
-      summary: "Deletes a pet"
-      description: ""
-      operationId: "deletePet"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "api_key"
-        in: "header"
-        required: false
-        type: "string"
-      - name: "petId"
-        in: "path"
-        description: "Pet id to delete"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /store/order:
-    post:
-      tags:
-      - "store"
-      summary: "Place an order for a pet"
-      description: ""
-      operationId: "placeOrder"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "order placed for purchasing the pet"
-        required: true
-        schema:
-          $ref: "#/definitions/Order"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid Order"
-  /store/order/{orderId}:
-    get:
-      tags:
-      - "store"
-      summary: "Find purchase order by ID"
-      description: "For valid response try integer IDs with value >= 1 and <= 10.\
-        \ Other values will generated exceptions"
-      operationId: "getOrderById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of pet that needs to be fetched"
-        required: true
-        type: "integer"
-        maximum: 10
-        minimum: 1
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-    delete:
-      tags:
-      - "store"
-      summary: "Delete purchase order by ID"
-      description: "For valid response try integer IDs with positive integer value.\
-        \ Negative or non-integer values will generate API errors"
-      operationId: "deleteOrder"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of the order that needs to be deleted"
-        required: true
-        type: "integer"
-        minimum: 1
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-  /store/inventory:
-    get:
-      tags:
-      - "store"
-      summary: "Returns pet inventories by status"
-      description: "Returns a map of status codes to quantities"
-      operationId: "getInventory"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            additionalProperties:
-              type: "integer"
-              format: "int32"
-      security:
-      - api_key: []
-  /user/createWithArray:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/{username}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user by user name"
-      description: ""
-      operationId: "getUserByName"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-    put:
-      tags:
-      - "user"
-      summary: "Updated user"
-      description: "This can only be done by the logged in user."
-      operationId: "updateUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        400:
-          description: "Invalid user supplied"
-        404:
-          description: "User not found"
-    delete:
-      tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-  /user/login:
-    get:
-      tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
-      operationId: "loginUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          headers:
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-          schema:
-            type: "string"
-        400:
-          description: "Invalid username/password supplied"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters: []
-      responses:
-        default:
-          description: "successful operation"
-  /user:
-    post:
-      tags:
-      - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
-      operationId: "createUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-securityDefinitions:
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "https://petstore.swagger.io/oauth/authorize"
-    flow: "implicit"
-    scopes:
-      read:pets: "read your pets"
-      write:pets: "modify pets in your account"
-definitions:
-  ApiResponse:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-      type:
-        type: "string"
-      message:
-        type: "string"
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          type: "string"
-          xml:
-            name: "photoUrl"
-      tags:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          xml:
-            name: "tag"
-          $ref: "#/definitions/Tag"
-      status:
-        type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      petId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-    xml:
-      name: "Order"
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      username:
-        type: "string"
-      firstName:
-        type: "string"
-      lastName:
-        type: "string"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
-    xml:
-      name: "User"
+    name: Inventory APi 1.0
+    url: https://github.com/nuovoforte/Nuovo-Forte-Test-SQL
 externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  description: Github
+  url: https://github.com/nuovoforte/Nuovo-Forte-Test-SQL
+servers:
+  - url: http://localhost:57678/api/inventory-setup
+  - url: http://localhost:57678/api/inventory-store
+tags:
+
+  - name: Setup Service
+    description: Exposes endpoints related to checkpoint service
+  - name: Store Service
+    description: Exposes endpoints related to route service
+  
+    
+paths:
+
+  /item-data-types:
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of item data types
+      description: Retrieve set of item data types
+      responses:
+        200:
+          $ref: '#/components/responses/GetItemDataTypesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+          
+  /organizations:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new organization
+      description: Add a new organization
+      requestBody:
+        $ref: '#/components/requestBodies/SaveOrganizationRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetOrganizationResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of organizations
+      description: Retrieve set of organizations
+      responses:
+        200:
+          $ref: '#/components/responses/GetOrganizationsResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /organizations/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing organization by item id
+      description: Update existing organization by item id
+      requestBody:
+        $ref: '#/components/requestBodies/SaveOrganizationRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing organization by item id
+      description: Remove existing organization by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+        
+        
+        
+  /inventory-types:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new inventory type
+      description: Add a new inventory type
+      requestBody:
+        $ref: '#/components/requestBodies/SaveInventoryTypeRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetInventoryTypeResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of inventory types
+      description: Retrieve set of inventory types
+      responses:
+        200:
+          $ref: '#/components/responses/GetInventoryTypesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /inventory-types/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing inventory type by item id
+      description: Update existing inventory type by item id
+      requestBody:
+        $ref: '#/components/requestBodies/SaveInventoryTypeRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing inventory type by item id
+      description: Remove existing inventory type by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+
+        
+        
+  /units:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new unit
+      description: Add a new unit
+      requestBody:
+        $ref: '#/components/requestBodies/SaveUnitRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetUnitResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of units 
+      description: Retrieve set of units
+      responses:
+        200:
+          $ref: '#/components/responses/GetUnitsResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /units/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing unit by item id
+      description: Update existing unit by item id
+      requestBody:
+        $ref: '#/components/requestBodies/SaveUnitRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing unit by item id
+      description: Remove existing unit by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+        
+        
+        
+  /item-statuses:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new item-status
+      description: Add a new item-status
+      requestBody:
+        $ref: '#/components/requestBodies/SaveItemStatusRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetItemStatusResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of item-statuses 
+      description: Retrieve set of item-statuses
+      responses:
+        200:
+          $ref: '#/components/responses/GetItemStatusesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /item-statuses/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing item-status by item id
+      description: Update existing item-status by item id
+      requestBody:
+        $ref: '#/components/requestBodies/SaveItemStatusRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing item-status by item id
+      description: Remove existing item-status by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+        
+
+
+        
+        
+  /store-types:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new store-type
+      description: Add a new store-type
+      requestBody:
+        $ref: '#/components/requestBodies/SaveStoreTypeRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetStoreTypeResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of store-types 
+      description: Retrieve set of store-types
+      responses:
+        200:
+          $ref: '#/components/responses/GetStoreTypesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /store-types/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing store-type by item id
+      description: Update existing store-type by item id
+      requestBody:
+        $ref: '#/components/requestBodies/SaveStoreTypeRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing store-type by item id
+      description: Remove existing store-type by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+        
+        
+
+
+        
+        
+  /transaction-types:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new transaction-type
+      description: Add a new transaction-type
+      requestBody:
+        $ref: '#/components/requestBodies/SaveTransactionTypeRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetTransactionTypeResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of transaction-types 
+      description: Retrieve set of transaction-types
+      responses:
+        200:
+          $ref: '#/components/responses/GetTransactionTypesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /transaction-types/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing transaction-type by item id
+      description: Update existing transaction-type by item id
+      requestBody:
+        $ref: '#/components/requestBodies/SaveTransactionTypeRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing transaction-type by item id
+      description: Remove existing transaction-type by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+
+        
+        
+  /inventory-items:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new inventory-item
+      description: Add a new inventory-item
+      requestBody:
+        $ref: '#/components/requestBodies/SaveInventoryItemRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetInventoryItemResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of inventory-items 
+      description: Retrieve set of inventory-items
+      responses:
+        200:
+          $ref: '#/components/responses/GetInventoryItemsResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /inventory-items/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing inventory-item by item id
+      description: Update existing inventory-item by item id
+      requestBody:
+        $ref: '#/components/requestBodies/SaveInventoryItemRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing inventory-item by item id
+      description: Remove existing inventory-item by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+               
+
+
+
+        
+        
+  /inventory-item-attributes:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new inventory-item-attribute
+      description: Add a new inventory-item-attribute
+      requestBody:
+        $ref: '#/components/requestBodies/SaveInventoryItemAttributeRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetInventoryItemAttributeResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of inventory-item-attributes 
+      description: Retrieve set of inventory-item-attributes
+      responses:
+        200:
+          $ref: '#/components/responses/GetInventoryItemAttributesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /inventory-item-attributes/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing inventory-item-attribute by item id
+      description: Update existing inventory-item-attribute by item id
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateInventoryItemAttributeRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing inventory-item-attribute by item id
+      description: Remove existing inventory-item-attribute by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+        
+        
+ 
+
+
+        
+        
+  /inventory-item-attribute-values:
+     post:
+      tags:
+        - Setup Service
+      summary: Add a new inventory-item-attribute-value
+      description: The attributeValue field is a dynamic data type of either 'string','number','datetime','boolean'
+      requestBody:
+        $ref: '#/components/requestBodies/SaveInventoryItemAttributeValueRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetInventoryItemAttributeValueResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of inventory-item-attributes-value
+      description: Retrieve set of inventory-item-attribute-values
+      responses:
+        200:
+          $ref: '#/components/responses/GetInventoryItemAttributeValuesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /inventory-item-attribute-values/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Setup Service
+      summary: Update existing inventory-item-attribute-value by item id
+      description: The attributeValue field is a dynamic data type of either 'string','number','datetime','boolean'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateInventoryItemAttributeValueRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Setup Service
+      summary: Remove existing inventory-item-attribute-value by item id
+      description: Remove existing inventory-item-attribute-value by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+
+
+          
+  /categories:
+     post:
+      tags:
+        - Store Service
+      summary: Add a new category
+      description: Add a new category
+      requestBody:
+        $ref: '#/components/requestBodies/SaveCategoryRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetCategoryResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Store Service
+      summary: Retrieve set of categories
+      description: Retrieve set of categories
+      responses:
+        200:
+          $ref: '#/components/responses/GetCategoriesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /categories/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Store Service
+      summary: Update existing category by item id
+      description: Update existing category by item id
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateCategoryRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Store Service
+      summary: Remove existing category by item id
+      description: Remove existing category by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+        
+        
+        
+        
+        
+
+          
+  /stock-categories:
+     post:
+      tags:
+        - Store Service
+      summary: Add a new stock-category
+      description: Add a new stock-category
+      requestBody:
+        $ref: '#/components/requestBodies/SaveStockCategoryRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/GetStockCategoryResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+     get:
+      tags:
+        - Store Service
+      summary: Retrieve set of stock-categories
+      description: Retrieve set of stock-categories
+      responses:
+        200:
+          $ref: '#/components/responses/GetStockCategoriesResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+  /stock-categories/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    put:
+      tags:
+       - Store Service
+      summary: Update existing stock-category by item id
+      description: Update existing stock-category by item id
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateStockCategoryRequest'
+      responses:
+        200:
+          description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    delete:
+      tags:
+       - Store Service
+      summary: Remove existing stock-category by item id
+      description: Remove existing stock-category by item id
+      responses:
+        200:
+          $ref: '#/components/responses/NumberResponse'
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse''
+        
+
+
+        
+
+ 
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      description: Item Id
+      required: true
+      schema:
+        type: integer
+        
+  schemas: 
+    Error:
+      title: Error Response
+      type: object
+      properties:
+        msg:
+          type: string
+          
+    Id:
+      title: Item Id
+      description: Item identifier
+      type: integer  
+    Int:
+      title: Output count either 0 or 1
+      description: Output count either 0 or 1
+      type: integer
+    DateTime:
+      title: A Date & Time
+      description: Datetime range (UTC), formatted as "YYYY-MM-DDTHH:MM:SS" (e.g. "1969-07-21T02:56:15")
+      type: string
+      format: date-time
+    Numeric:
+      title: Entry Numeric Data
+      type: number
+      format: float
+      
+    ItemDataTypeModel:
+      title: Retrieve set of item data type
+      type: object  
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+          format: string
+          
+          
+    SaveOrganizationModel:
+      title: Create organization
+      type: object  
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          format: string
+        description:
+          type: string
+          format: string
+          
+    GetOrganizationModel:
+      title: Retrieve set of organization
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveOrganizationModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+    SaveInventoryTypeModel:
+      title: Create inventory type
+      type: object  
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          format: string
+          
+    GetInventoryTypeModel:
+      title: Retrieve set of inventory type
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveInventoryTypeModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+    SaveUnitModel:
+      title: Create unit
+      type: object  
+      required:
+        - unit
+      properties:
+        unit:
+          type: string
+          format: string
+          
+    GetUnitModel:
+      title: Retrieve set of unit
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveUnitModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+           
+    SaveItemStatusModel:
+      title: Create item status
+      type: object  
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          format: string
+          
+    GetItemStatusModel:
+      title: Retrieve set of item status
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveItemStatusModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+           
+    SaveStoreTypeModel:
+      title: Create store type
+      type: object  
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          format: string
+          
+    GetStoreTypeModel:
+      title: Retrieve set of store type
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveStoreTypeModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+           
+    SaveTransactionTypeModel:
+      title: Create transaction type
+      type: object  
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          format: string
+          
+    GetTransactionTypeModel:
+      title: Retrieve set of transaction type
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveTransactionTypeModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+    SaveInventoryItemModel:
+      title: Create inventory item
+      type: object  
+      required:
+        - name
+        - inventoryTypeId
+        - purchasePrice
+        - recommandedSellingPrice
+      properties:
+        name:
+          type: string
+          format: string
+        inventoryTypeId:
+          $ref: '#/components/schemas/Id'
+        measureUnitId:
+          $ref: '#/components/schemas/Id'
+        purchasePrice:
+          $ref: '#/components/schemas/Numeric'
+        recommandedSellingPrice:
+          $ref: '#/components/schemas/Numeric'
+        description:
+          type: string
+          format: string
+          
+    GetInventoryItemModel:
+      title: Retrieve set of inventory item
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveInventoryItemModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+    SaveInventoryItemAttributeModel:
+      title: Create inventory item attribute
+      type: object  
+      required:
+        - attributeName
+        - attributeDataTypeId
+        - inventoryItemId
+      properties:
+        attributeName:
+          type: string
+          format: string
+        attributeDataTypeId:
+          $ref: '#/components/schemas/Id'
+        inventoryItemId:
+          $ref: '#/components/schemas/Id'
+          
+          
+    UpdateInventoryItemAttributeModel:
+      title: Update inventory item attribute
+      type: object  
+      required:
+        - attributeName
+        - attributeDataTypeId
+      properties:
+        attributeName:
+          type: string
+          format: string
+        attributeDataTypeId:
+          $ref: '#/components/schemas/Id'
+          
+    GetInventoryItemAttributeModel:
+      title: Retrieve set of inventory item attribute
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveInventoryItemAttributeModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+    SaveInventoryItemAttributeValueModel:
+      title: Create inventory item attribute value
+      description: attributeValue is a dynamic dataType of either 'string','number','datetime','boolean'
+      type: object  
+      required:
+        - attributeId
+        - attributeValue
+        - inventoryItemId
+      properties:
+        attributeId:
+          $ref: '#/components/schemas/Id'
+        attributeValue:
+          type: object
+          format: object
+        inventoryItemId:
+          $ref: '#/components/schemas/Id'
+          
+    UpdateInventoryItemAttributeValueModel:
+      title: Update inventory item attribute value
+      type: object  
+      required:
+        - attributeId
+        - attributeValue
+      properties:
+        attributeId:
+          $ref: '#/components/schemas/Id'
+        attributeValue:
+          type: object
+          format: object
+          
+    GetInventoryItemAttributeValueModel:
+      title: Retrieve set of inventory item attribute value
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveInventoryItemAttributeValueModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+          
+    SaveCategoryModel:
+      title: Create category
+      description: Create category
+      type: object  
+      required:
+        - orgId
+        - name
+      properties:
+        orgId:
+          type: integer
+        name:
+          type: string
+          format: string
+          
+    UpdateCategoryModel:
+      title: Update category
+      type: object  
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          format: string
+          
+    GetCategoryModel:
+      title: Retrieve set of category
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveCategoryModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+    SaveStockCategoryModel:
+      title: Create category
+      description: Create category
+      type: object  
+      required:
+        - orgId
+        - categoryId
+        - inventoryItemId
+      properties:
+        orgId:
+          type: integer
+        categoryId:
+          $ref: '#/components/schemas/Id'
+        inventoryItemId:
+          $ref: '#/components/schemas/Id'
+          
+    UpdateStockCategoryModel:
+      title: Update category
+      type: object  
+      required:
+        - categoryId
+        - inventoryItemId
+      properties:
+        categoryId:
+          $ref: '#/components/schemas/Id'
+        inventoryItemId:
+          $ref: '#/components/schemas/Id'
+          
+    GetStockCategoryModel:
+      title: Retrieve set of stock category
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveStockCategoryModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+    SaveStoreModel:
+      title: Create store
+      description: Create store
+      type: object  
+      required:
+        - orgId
+        - name
+        - storeTypeId
+      properties:
+        orgId:
+          type: integer
+        storeTypeId:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+          format: string
+        description:
+          type: string
+          format: string
+          
+    UpdateStoreModel:
+      title: Update store
+      type: object  
+      required:
+        - name
+        - storeTypeId
+      properties:
+        storeTypeId:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+          format: string
+        description:
+          type: string
+          format: string
+          
+    GetStoreModel:
+      title: Retrieve set of store
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveStoreModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+    SaveStoreInventoryModel:
+      title: Create store inventory
+      description: Create store
+      type: object  
+      required:
+        - orgId
+        - name
+        - storeId
+        - inventoryItemId
+        - itemStatusId
+        - purchasePrice
+        - sellingPrice
+        - lastStockQuantity
+        - stockQuantity
+      properties:
+        orgId:
+          $ref: '#/components/schemas/Id'
+        storeId:
+          $ref: '#/components/schemas/Id'
+        inventoryItemId:
+          $ref: '#/components/schemas/Id'
+        itemStatusId:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+          format: string
+        sku:
+          type: string
+          format: string
+        purchasePrice:
+          $ref: '#/components/schemas/Numeric'
+        sellingPrice:
+          $ref: '#/components/schemas/Numeric'
+        lastStockQuantity:
+          type: integer
+        stockQuantity:
+         type: integer
+          
+    UpdateStoreInventoryModel:
+      title: Update store inventory
+      type: object  
+      required:
+        - name
+        - storeId
+        - inventoryItemId
+        - itemStatusId
+        - purchasePrice
+        - sellingPrice
+        - lastStockQuantity
+        - stockQuantity
+      properties:
+        name:
+          type: string
+          format: string
+        sku:
+          type: string
+          format: string
+        itemStatusId:
+          $ref: '#/components/schemas/Id'
+        lastStockQuantity:
+          type: integer
+        stockQuantity:
+          type: integer
+        purchasePrice:
+          $ref: '#/components/schemas/Numeric'
+        sellingPrice:
+          $ref: '#/components/schemas/Numeric'
+          
+    GetStoreInventoryModel:
+      title: Retrieve set of store inventory
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveStoreInventoryModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+          
+    SaveStockTransactionModel:
+      title: Create store
+      description: Create store
+      type: object  
+      required:
+        - orgId
+        - name
+        - storeTypeId
+      properties:
+        orgId:
+          type: integer
+        storeTypeId:
+          $ref: '#/components/schemas/Id'
+        name:
+          type: string
+          format: string
+        description:
+          type: string
+          format: string
+          
+          
+    GetStockTransactionModel:
+      title: Retrieve set of store
+      type: object   
+      allOf:
+        - $ref: '#/components/schemas/SaveStockTransactionModel'
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        createdOn:
+          allOf:
+            - $ref: '#/components/schemas/DateTime'
+            - title: Create date of entry. Default to now() if not supplied
+          readOnly: true
+          
+          
+          
+  requestBodies:
+    SaveOrganizationRequest:
+      description: Organization entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveOrganizationModel'
+            
+    SaveInventoryTypeRequest:
+      description: Inventory type entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveInventoryTypeModel'
+            
+            
+    SaveUnitRequest:
+      description: Unit entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveUnitModel'
+            
+    SaveItemStatusRequest:
+      description: Item status entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveItemStatusModel'
+            
+    SaveStoreTypeRequest:
+      description: Store type entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveStoreTypeModel'
+            
+    SaveTransactionTypeRequest:
+      description: Transaction type entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveTransactionTypeModel'
+            
+    SaveInventoryItemRequest:
+      description: Inventory item entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveInventoryItemModel'
+            
+    SaveInventoryItemAttributeRequest:
+      description: Inventory item attribute entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveInventoryItemAttributeModel'
+            
+    UpdateInventoryItemAttributeRequest:
+      description: Inventory item attribute entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateInventoryItemAttributeModel'
+            
+    SaveInventoryItemAttributeValueRequest:
+      description: Inventory item attribute value entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveInventoryItemAttributeValueModel'
+            
+    UpdateInventoryItemAttributeValueRequest:
+      description: Inventory item attribute value entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateInventoryItemAttributeValueModel'
+            
+    SaveCategoryRequest:
+      description: Category entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveCategoryModel'
+            
+    UpdateCategoryRequest:
+      description: Category entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateCategoryModel'
+            
+            
+    SaveStockCategoryRequest:
+      description: Stock Category entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveStockCategoryModel'
+            
+    UpdateStockCategoryRequest:
+      description:  Stock Category entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateStockCategoryModel'
+            
+    SaveStoreRequest:
+      description: Store entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveStoreModel'
+            
+    UpdateStoreRequest:
+      description: Store entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateStoreModel'
+            
+    SaveStoreInventoryRequest:
+      description: Store Inventory entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveStoreInventoryModel'
+            
+    UpdateStoreInventoryRequest:
+      description: Store Inventory entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateStoreInventoryModel'
+            
+    SaveStockTransactionRequest:
+      description: Store Inventory entry request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SaveStockTransactionModel'
+            
+   
+  responses:
+    NumberResponse:
+      description: Specified number record
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Int'
+    ErrorResponse:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Int'
+    GetItemDataTypesResponse:
+      description: Return set of organization objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/ItemDataTypeModel'
+                
+                
+    GetOrganizationsResponse:
+      description: Return set of organization objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetOrganizationModel'
+    GetOrganizationResponse:
+      description: Return organization object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetOrganizationModel'
+            
+            
+    GetInventoryTypesResponse:
+      description: Return set of inventory type objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetInventoryTypeModel'
+    GetInventoryTypeResponse:
+      description: Return inventory type object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetInventoryTypeModel'
+            
+            
+    GetUnitsResponse:
+      description: Return set of unit objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetUnitModel'
+    GetUnitResponse:
+      description: Return unit object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetUnitModel'
+            
+            
+            
+    GetItemStatusesResponse:
+      description: Return set of item status objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetItemStatusModel'
+    GetItemStatusResponse:
+      description: Return item status object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetItemStatusModel'
+            
+         
+            
+    GetStoreTypesResponse:
+      description: Return set of store type objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetStoreTypeModel'
+    GetStoreTypeResponse:
+      description: Return store type object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetStoreTypeModel'
+            
+               
+            
+    GetTransactionTypesResponse:
+      description: Return set of transaction type objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetTransactionTypeModel'
+    GetTransactionTypeResponse:
+      description: Return transaction type object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetTransactionTypeModel'
+            
+            
+            
+            
+    GetInventoryItemsResponse:
+      description: Return set of inventory item objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetInventoryItemModel'
+    GetInventoryItemResponse:
+      description: Return inventory item object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetInventoryItemModel'
+            
+               
+            
+            
+    GetInventoryItemAttributesResponse:
+      description: Return set of inventory item attribute objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetInventoryItemAttributeModel'
+    GetInventoryItemAttributeResponse:
+      description: Return inventory item attribute object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetInventoryItemAttributeModel'
+               
+            
+            
+    GetInventoryItemAttributeValuesResponse:
+      description: Return set of inventory item attribute objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetInventoryItemAttributeValueModel'
+    GetInventoryItemAttributeValueResponse:
+      description: Return inventory item attribute object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetInventoryItemAttributeValueModel'
+            
+            
+               
+            
+    GetCategoriesResponse:
+      description: Return set of category objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetCategoryModel'
+    GetCategoryResponse:
+      description: Return category object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetCategoryModel'
+            
+            
+            
+            
+            
+            
+               
+            
+    GetStockCategoriesResponse:
+      description: Return set of stock category objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetStockCategoryModel'
+    GetStockCategoryResponse:
+      description: Return stock category object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetStockCategoryModel'
+            
+            
+            
+               
+            
+    GetStoresResponse:
+      description: Return set of store objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetStoreModel'
+    GetStoreResponse:
+      description: Return store object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetStoreModel'
+            
+            
+            
+            
+               
+            
+    GetStoreInventoriesResponse:
+      description: Return set of store inventory objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetStoreInventoryModel'
+    GetStoreInventoryResponse:
+      description: Return store inventory object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetStoreInventoryModel'
+            
+            
+            
+            
+               
+            
+    GetStockTransactionsResponse:
+      description: Return set of stock transaction objects
+      content:
+        application/json:
+          schema:
+           type: array
+           items:
+                $ref: '#/components/schemas/GetStockTransactionModel'
+    GetStockTransactionResponse:
+      description: Return stock transaction object
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetStockTransactionModel'
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+ 
