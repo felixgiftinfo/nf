@@ -82,6 +82,7 @@ paths:
         500:
           $ref: '#/components/responses/ErrorResponse'
           
+          
   /organizations/{id}:
     parameters:
       - $ref: '#/components/parameters/Id'
@@ -95,6 +96,23 @@ paths:
       responses:
         200:
           description: successful operation
+        400:
+          $ref: '#/components/responses/ErrorResponse'
+        401:
+          $ref: '#/components/responses/ErrorResponse'
+        403:
+          $ref: '#/components/responses/ErrorResponse'
+        500:
+          $ref: '#/components/responses/ErrorResponse'
+          
+    get:
+      tags:
+        - Setup Service
+      summary: Retrieve set of organization
+      description: Retrieve set of organization
+      responses:
+        200:
+          $ref: '#/components/responses/GetOrganizationResponse'
         400:
           $ref: '#/components/responses/ErrorResponse'
         401:
@@ -744,7 +762,7 @@ paths:
       summary: Update existing inventory-item-attribute-value by item id
       description: The attributeValue field is a dynamic data type of either 'string','number','datetime','boolean'
       requestBody:
-        $ref: '#/components/requestBodies/UpdateInventoryItemAttributeValueRequest'
+        $ref: '#/components/requestBodies/SaveInventoryItemAttributeValueRequest'
       responses:
         200:
           description: successful operation
@@ -1133,26 +1151,6 @@ paths:
         500:
           $ref: '#/components/responses/ErrorResponse'
           
-  /stock-transactions/{id}:
-    parameters:
-      - $ref: '#/components/parameters/Id'
-    delete:
-      tags:
-       - Store Service
-      summary: Remove existing stock-transaction by item id
-      description: Remove existing stock-transaction by item id
-      responses:
-        200:
-          $ref: '#/components/responses/NumberResponse'
-        400:
-          $ref: '#/components/responses/ErrorResponse'
-        401:
-          $ref: '#/components/responses/ErrorResponse'
-        403:
-          $ref: '#/components/responses/ErrorResponse'
-        500:
-          $ref: '#/components/responses/ErrorResponse'
-        
         
         
         
@@ -1170,6 +1168,7 @@ components:
       required: true
       schema:
         type: integer
+        
         
   schemas: 
     Error:
@@ -1396,6 +1395,12 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        inventoryTypeName:
+          type: string
+          format: string
+        measureUnitName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1442,6 +1447,12 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        attributeDataTypeName:
+          type: string
+          format: string
+        inventoryItemName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1457,28 +1468,13 @@ components:
       required:
         - attributeId
         - attributeValue
-        - inventoryItemId
       properties:
         attributeId:
           $ref: '#/components/schemas/Id'
         attributeValue:
           type: object
           format: object
-        inventoryItemId:
-          $ref: '#/components/schemas/Id'
           
-    UpdateInventoryItemAttributeValueModel:
-      title: Update inventory item attribute value
-      type: object  
-      required:
-        - attributeId
-        - attributeValue
-      properties:
-        attributeId:
-          $ref: '#/components/schemas/Id'
-        attributeValue:
-          type: object
-          format: object
           
     GetInventoryItemAttributeValueModel:
       title: Retrieve set of inventory item attribute value
@@ -1488,6 +1484,12 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        attributeDataTypeName:
+          type: string
+          format: string
+        inventoryItemName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1529,6 +1531,9 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        orgName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1573,6 +1578,15 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        orgName:
+          type: string
+          format: string
+        categoryName:
+          type: string
+          format: string
+        inventoryItemName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1625,6 +1639,12 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        orgName:
+          type: string
+          format: string
+        storeTypeName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1638,7 +1658,6 @@ components:
       type: object  
       required:
         - orgId
-        - name
         - storeId
         - inventoryItemId
         - itemStatusId
@@ -1655,9 +1674,6 @@ components:
           $ref: '#/components/schemas/Id'
         itemStatusId:
           $ref: '#/components/schemas/Id'
-        name:
-          type: string
-          format: string
         sku:
           type: string
           format: string
@@ -1708,6 +1724,18 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        orgName:
+          type: string
+          format: string
+        storeName:
+          type: string
+          format: string
+        inventoryItemName:
+          type: string
+          format: string
+        itemStatusName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1723,17 +1751,24 @@ components:
       type: object  
       required:
         - orgId
-        - name
-        - storeTypeId
+        - sourceStoreId
+        - inventoryItemId
+        - transactionTypeId
+        - quantity
       properties:
         orgId:
           type: integer
-        storeTypeId:
+        sourceStoreId:
           $ref: '#/components/schemas/Id'
-        name:
-          type: string
-          format: string
-        description:
+        destinationStoreId:
+          $ref: '#/components/schemas/Id'
+        inventoryItemId:
+          $ref: '#/components/schemas/Id'
+        transactionTypeId:
+          $ref: '#/components/schemas/Id'
+        quantity:
+          $ref: '#/components/schemas/Int'
+        approvedBy:
           type: string
           format: string
           
@@ -1746,6 +1781,21 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        orgName:
+          type: string
+          format: string
+        sourceStoreName:
+          type: string
+          format: string
+        destinationStoreName:
+          type: string
+          format: string
+        inventoryItemName:
+          type: string
+          format: string
+        transactionTypeName:
+          type: string
+          format: string
         createdOn:
           allOf:
             - $ref: '#/components/schemas/DateTime'
@@ -1826,12 +1876,6 @@ components:
           schema:
             $ref: '#/components/schemas/SaveInventoryItemAttributeValueModel'
             
-    UpdateInventoryItemAttributeValueRequest:
-      description: Inventory item attribute value entry request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/UpdateInventoryItemAttributeValueModel'
             
     SaveCategoryRequest:
       description: Category entry request
@@ -1891,7 +1935,7 @@ components:
             $ref: '#/components/schemas/UpdateStoreInventoryModel'
             
     SaveStockTransactionRequest:
-      description: Store Inventory entry request
+      description: Stock transaction entry request
       content:
         application/json:
           schema:
